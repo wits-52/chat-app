@@ -1,13 +1,29 @@
+var socket = io();
 
-var socket=io();
-socket.on("connect",function(){
-    console.log("Connected to server");
-});
-socket.on("disconnect",function(){
-    console.log("Disconnected from server");
+socket.on('connect', function () {
+  console.log('Connected to server');
 });
 
-socket.on("newMessage",function(data){
-    console.log(data);
+socket.on('disconnect', function () {
+  console.log('Disconnected from server');
 });
-//socket.emit('createMsg',{from:"user",message:"user bheje msg"});
+
+socket.on('newMessage', function (message) {
+  console.log('newMessage', message);
+  var li = jQuery('<li></li>');
+  li.text(`${message.from}: ${message.text}`);
+
+  jQuery('#messages').append(li);
+});
+
+jQuery('#message-form').on('submit', function (e) {
+  e.preventDefault();
+  var msg=jQuery('[name=message]').val();
+  document.getElementById('message-form')['message'].value="";
+  socket.emit('createMessage', {
+    from: 'User',
+    text: msg
+  }, function () {
+
+  });
+});

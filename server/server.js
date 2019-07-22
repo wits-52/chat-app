@@ -1,35 +1,40 @@
-const path=require('path');
-const http=require('http');
+const path = require('path');
+const http = require('http');
+const express = require('express');
+const socketIO = require('socket.io');
 
-const express=require('express');
-const socketIO=require('socket.io');
+const {generateMessage} = require('./utils/message');
+const publicPath = path.join(__dirname, '../public');
+const port = process.env.PORT || 3000;
+var app = express();
+var server = http.createServer(app);
+var io = socketIO(server);
 
-const publicPath=path.join(__dirname,'../public');
-var port=process.env.PORT||3000;
-var app=express();
-var server=http.createServer(app);
-var io=socketIO(server);
-var {generateMsg}=require('./utils/generateMsg');
 app.use(express.static(publicPath));
 
+io.on('connection', (socket) => {
+  console.log('New user connected');
 
-io.on('connection',function(socket){
-    console.log("new User Connected");
-    socket.emit('newMessage',generateMsg("Admin","welcome to chatroom"));
-    socket.broadcast.emit('newMessage',generateMsg("Admin","new user joined"));
-    socket.emit('newMessage',generateMsg("Admin",'this is message'));
-    socket.on('createMsg',(data)=>{
-        console.log(data);
-        io.emit('newMessage',generateMsg(data.from,data.message));
-    })
-socket.on('disconnect',function(){
-    console.log("user disconnected");
+  socket.emit('newMessage', generateMessage('Admin', 'Welcome to the chat app'));
+
+  socket.broadcast.emit('newMessage', generateMessage('Admin', 'New user joined'));
+
+  socket.on('createMessage', (message, callback) => {
+    console.log('createMessage', message);
+    io.emit('newMessage', generateMessage(message.from, message.text));
+    callback('This is from the server.');
+    // socket.broadcast.emit('newMessage', {
+    //   from: message.from,
+    //   text: message.text,
+    //   createdAt: new Date().getTime()
+    // });
+  });
+
+  socket.on('disconnect', () => {
+    console.log('User was disconnected');
+  });
 });
 
-});
-
-
-
-server.listen(port,()=>{
-    console.log("server started at port ",port);
+server.listen(port, () => {
+  console.log(`Server is up on ${port}`);
 });
