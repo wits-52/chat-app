@@ -16,9 +16,13 @@ socket.on('newMessage', function (message) {
   console.log('newMessage', message);
   if(message.from===user)
   message.from="You";
+  if(message.from==="Admin")
+  message.from=" ";
   var li = jQuery('<li></li>');
-  li.text(`${message.from}: ${message.text}`);
-
+  if(message.from!==" ")
+    li.text(`${message.from}: ${message.text}`);
+  else
+    li.text(`${message.text}`); 
   jQuery('#messages').append(li);
 });
 
