@@ -1,24 +1,18 @@
 <!DOCTYPE html>
-
-<html>
-
+<html lang="en">
 <head>
-  <meta charset="utf-8">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <script src="./js/index.js"></script>
+  <title>Login</title>
 </head>
-
 <body>
-  <p>Welcome to the chat app</p>
-
-  <ol id="messages"></ol>
-
-  <form id="message-form">
-    <input name="message" type="text" placeholder="Message" autocomplete="off" required="required"/>
-    <button>Send</button>
-  </form>
-
-  <script src="/socket.io/socket.io.js"></script>
-  <script src="/js/libs/jquery-3.1.0.min.js"></script>
-  <script src="/js/index.js"></script>
+    <form name="loginForm" action="chat.html"  onsubmit="return chat()">
+      <label name="name">NAME</label>
+      <input id="form-name" type="text" placeholder="Enter name" required="required" autocomplete="off"/>
+      <input type="submit" value="Chat">
+    </form>
+    
 </body>
-
 </html>
